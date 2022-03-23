@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style/index.css">
+   
+</head>
+<body>
+    <div id="navbar"></div>
+    <div id="showData">
+      
+</body>
+</html>
+<script type="module">
+    import header from "./components/header.js"
+    console.log(header)
+    let navbar = document.getElementById("navbar");
+    navbar.innerHTML = header()
+
+    let input_box = document.getElementById("search-input")
+
+    input_box.addEventListener("keypress", ()=>
+    {
+        getData(event);
+    });
+
+//https://api.github.com/users/octocat/repos
+// owner:
+// avatar_url: "https://avatars.githubusercontent.com/u/82832370?v=4"
+let pro = document.getElementById("profile-img")
+let showData = document.getElementById("showData")
+let showRepo = document.getElementById("showRepo")
+const getData = async (event)=>{
+         //console.log(event)
+        try{
+            
+            if(event.code === 'Enter')
+         {
+         let input = input_box.value;
+         let res = await fetch(`https://api.github.com/users/${input}/repos`)
+         let data = await res.json();
+         console.log("data", data)
+         showData.innerHTML =null
+         pro.src = data[0].owner.avatar_url
+
+let showProfile = document.createElement("div")
+showProfile.setAttribute("id","showProfile")
+let showRepo = document.createElement("div")
+showRepo.setAttribute("id","showRepo")
+showData.append(showProfile,showRepo)
+         let profBig =  document.createElement("img")
+         profBig.src = data[0].owner.avatar_url
+         profBig.style.borderRadius="50%"
+
+         let btnEditPro = document.createElement("button")
+         btnEditPro.innerHTML = "Edit Profile"
+         btnEditPro.style.width = "300px"
+
+        showProfile.append(profBig, btnEditPro)
+          
+         for(let i=0; i<data.length; i++)
+         {
+            let div = document.createElement("div")
+            div.setAttribute("id", "linkBox")
+            
+            let ancho = document.createElement("a")
+             ancho.href = data[i].clone_url;
+             ancho.innerHTML = data[i].full_name
+             let privacyBtn = document.createElement("button")
+              privacyBtn.innerHTML = data[i].visibility
+             div.append(ancho, privacyBtn )
+             showRepo.append(div)
+             //console.log(ancho.href)
+            
+            
+
+              
+        }
+
+        
+        
+         }
+
+//owner.avatar_url
+        }
+        catch(err){
+        console.log(err)
+        }
+
+
+    };
+
+</script>
